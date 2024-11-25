@@ -2,6 +2,9 @@
 
 ## Assumptions
 1. Allow adding items with the same name to a table, as in real life customers can order the same item multiple times. 
+2. When ordered mulitple items with the same name in a table, 
+   a. `Get the item in a table` will return all items which matched the name
+   b. `Delete the item in a table` will remove all items which matches the name
 
 ## Run the service
 ```sh
@@ -17,10 +20,9 @@ Running `target/debug/simple-restaurant-api`
 
 ### Add new items
 ```sh
-$ curl 'localhost:8080/tables/1/orders' \
-    -H 'Content-Type: application/json' \
-    -d '["Pizza", "Pasta", "Salad"]' \ 
-    -X POST 
+$ curl -X POST 'localhost:8080/tables/1/orders' \
+       -H 'Content-Type: application/json' \
+       -d '["Pizza", "Pasta", "Salad"]'  
 ```
 Response:
 ```json
@@ -66,7 +68,7 @@ Response:
 }
 ```
 
-### Delete one item for a table 
+### Delete the item in a table 
 ```sh
 $ curl -X DELETE 'localhost:8080/tables/1/orders/Pizza'
 ```
@@ -86,7 +88,7 @@ Response:
 }
 ```
 
-### Get an item for a table
+### Get the item in a table
 ```sh
 $ curl 'localhost:8080/tables/1/orders/Pasta'
 ```
