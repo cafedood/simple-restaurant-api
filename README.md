@@ -5,6 +5,7 @@
 2. When ordered mulitple items with the same name in a table, 
 
    a. `Get the item in a table` will return all items which matched the name
+
    b. `Delete the item in a table` will remove all items which matches the name
 
 ## Run the service
