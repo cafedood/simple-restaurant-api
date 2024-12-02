@@ -4,12 +4,14 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-actix-web = "4"
-serde = { version = "1.0.117", features = ["derive"] }
-serde_json = "*"
-rand = "*"
-
-[dev-dependencies]
-actix-rt = "*"
-tokio = { version = "*", features = ["macros", "rt-multi-thread"] }
-
+actix-web = "4.9.0"
+serde = "1.0.210"
+dotenvy = "0.15.7"
+env_logger = "0.11.5"
+log = "0.4.22"
+chrono = "0.4.38"
+mysql = "25.0.1"
+rand = "0.8.5"
+derive_more = "0.99.18"
+actix-request-identifier = "4.2.0"
+hateoas = "1.0.1"

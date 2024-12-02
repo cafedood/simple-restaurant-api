@@ -1,0 +1,3 @@
+{
+    "items_names": ["Pizza", "Pasta", "Salad", "Ramen", "Soup"]
+}

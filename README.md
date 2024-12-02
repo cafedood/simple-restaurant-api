@@ -1,15 +1,16 @@
 # Simple Restaurant API 
 
-## Assumptions
-1. Allow adding items with the same name to a table, as in real life customers can order the same item multiple times. 
-2. When ordered mulitple items with the same name in a table, 
-
-   a. `Get the item in a table` will return all items which matched the name
-
-   b. `Delete the item in a table` will remove all items which matches the name
 
 ## Run the service
+
+### with `docker`
 ```sh
+$ docker compose build 
+$ docker compose up 
+```
+### without `docker` 
+```sh
+$ mysql.server start
 $ cargo clean && cargo build && cargo run 
 ```
 Logs: 
@@ -20,93 +21,210 @@ Running `target/debug/simple-restaurant-api`
 
 ## API Tests 
 
-### Add new items
+### load test from requirements
+"The application MUST accept at least 10 simultaneous incoming add/remove/query requests."
+![alt text](docs/loadtests.png "load tests")
+
+
+### Run with `hurl`
+All API tests under `tests` folder
 ```sh
-$ curl -X POST 'localhost:8080/tables/1/orders' \
+$ hurl --test . 
+```
+
+### Manual test examples with CURL
+#### Add new items
+```sh
+$ curl -X POST 'localhost:8080/tables/1/items' \
        -H 'Content-Type: application/json' \
-       -d '["Pizza", "Pasta", "Salad"]'  
+       -d '{"items_names": ["Pizza", "Pasta", "Salad", "Ramen", "Soup"]}'  
 ```
 Response:
 ```json
 {
-  "items": [
-    {
-      "name": "Pizza",
-      "cooking_time": 14
-    },
-    {
-      "name": "Pasta",
-      "cooking_time": 12
-    },
-    {
-      "name": "Salad",
-      "cooking_time": 10
-    }
-  ]
+   "status":"success",
+   "message":"Added 5 item(s) to table 1",
+   "items_ids":[ 11, 12, 13, 14, 15 ]
 }
 ```
 
-### Get all items for a table
+#### Get all items for a table
 ```sh
-$ curl 'localhost:8080/tables/1/orders'
+$ curl 'localhost:8080/tables/1/items'
+```
+Response: 
+```json
+[
+   {
+      "item_id":11,
+      "table_number":1,
+      "item_name":"Pizza",
+      "ordered_on":"2024-12-02 04:34:35",
+      "prepare_minutes":15,
+      "_links":[
+         {
+            "href":"/tables/1/items/11",
+            "rel":"self",
+            "method":"Get"
+         },
+         {
+            "href":"/tables/1/items/11",
+            "rel":"delete",
+            "method":"Delete"
+         },
+         {
+            "href":"/tables/1",
+            "rel":"table",
+            "method":"Get"
+         }
+      ]
+   },
+   {
+      "item_id":12,
+      "table_number":1,
+      "item_name":"Pasta",
+      "ordered_on":"2024-12-02 04:34:35",
+      "prepare_minutes":6,
+      "_links":[
+         {
+            "href":"/tables/1/items/12",
+            "rel":"self",
+            "method":"Get"
+         },
+         {
+            "href":"/tables/1/items/12",
+            "rel":"delete",
+            "method":"Delete"
+         },
+         {
+            "href":"/tables/1",
+            "rel":"table",
+            "method":"Get"
+         }
+      ]
+   },
+   {
+      "item_id":13,
+      "table_number":1,
+      "item_name":"Salad",
+      "ordered_on":"2024-12-02 04:34:35",
+      "prepare_minutes":9,
+      "_links":[
+         {
+            "href":"/tables/1/items/13",
+            "rel":"self",
+            "method":"Get"
+         },
+         {
+            "href":"/tables/1/items/13",
+            "rel":"delete",
+            "method":"Delete"
+         },
+         {
+            "href":"/tables/1",
+            "rel":"table",
+            "method":"Get"
+         }
+      ]
+   },
+   {
+      "item_id":14,
+      "table_number":1,
+      "item_name":"Ramen",
+      "ordered_on":"2024-12-02 04:34:35",
+      "prepare_minutes":9,
+      "_links":[
+         {
+            "href":"/tables/1/items/14",
+            "rel":"self",
+            "method":"Get"
+         },
+         {
+            "href":"/tables/1/items/14",
+            "rel":"delete",
+            "method":"Delete"
+         },
+         {
+            "href":"/tables/1",
+            "rel":"table",
+            "method":"Get"
+         }
+      ]
+   },
+   {
+      "item_id":15,
+      "table_number":1,
+      "item_name":"Soup",
+      "ordered_on":"2024-12-02 04:34:35",
+      "prepare_minutes":6,
+      "_links":[
+         {
+            "href":"/tables/1/items/15",
+            "rel":"self",
+            "method":"Get"
+         },
+         {
+            "href":"/tables/1/items/15",
+            "rel":"delete",
+            "method":"Delete"
+         },
+         {
+            "href":"/tables/1",
+            "rel":"table",
+            "method":"Get"
+         }
+      ]
+   }
+]
+```
+
+#### Delete the item in a table 
+```sh
+$ curl -X DELETE 'localhost:8080/tables/1/items/11'
 ```
 Response: 
 ```json
 {
-  "items": [
-    {
-      "name": "Pizza",
-      "cooking_time": 14
-    },
-    {
-      "name": "Pasta",
-      "cooking_time": 12
-    },
-    {
-      "name": "Salad",
-      "cooking_time": 10
-    }
-  ]
+   "status":"success",
+   "message":"Removed item id: 11"
 }
 ```
 
-### Delete the item in a table 
+#### Get the item in a table
 ```sh
-$ curl -X DELETE 'localhost:8080/tables/1/orders/Pizza'
-```
-Response: 
-```json
-{
-  "items": [
-    {
-      "name": "Pasta",
-      "cooking_time": 12
-    },
-    {
-      "name": "Salad",
-      "cooking_time": 10
-    }
-  ]
-}
-```
-
-### Get the item in a table
-```sh
-$ curl 'localhost:8080/tables/1/orders/Pasta'
+$ curl 'localhost:8080/tables/1/items/12'
 ```
 Response:
 ```json
 {
-  "name": "Pasta",
-  "cooking_time": 12
+   "item_id":12,
+   "table_number":1,
+   "item_name":"Pasta",
+   "ordered_on":"2024-12-02 04:34:35",
+   "prepare_minutes":6,
+   "_links":[
+      {
+         "href":"/tables/1/items/12",
+         "rel":"self",
+         "method":"Get"
+      },
+      {
+         "href":"/tables/1/items/12",
+         "rel":"delete",
+         "method":"Delete"
+      },
+      {
+         "href":"/tables/1",
+         "rel":"table",
+         "method":"Get"
+      }
+   ]
 }
 ```
 ```sh
-$ curl 'localhost:8080/tables/1/orders/Pizza'
+$ curl 'localhost:8080/tables/1/items/11'
 ```
 Response:
 ```json
-Item not found
+{"message":"Can NOT found the resource"}
 ```
-
-
