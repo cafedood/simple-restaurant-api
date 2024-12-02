@@ -13,11 +13,6 @@ $ docker compose up
 $ mysql.server start
 $ cargo clean && cargo build && cargo run 
 ```
-Logs: 
-```
-Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.17s
-Running `target/debug/simple-restaurant-api`
-```
 
 ## API Tests 
 
